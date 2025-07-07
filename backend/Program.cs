@@ -2,9 +2,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<IspitContext>(options =>
+builder.Services.AddDbContext<DjoleGrandContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("IspitCS"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DjoleGrandCS"));
 });
 
 builder.Services.AddCors(options =>

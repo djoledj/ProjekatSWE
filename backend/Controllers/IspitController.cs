@@ -4,13 +4,13 @@ namespace WebTemplate.Controllers;
 [Route("[controller]")]
 public class IspitController : ControllerBase
 {
-    public IspitContext Context { get; set; }
+    public DjoleGrandContext Context { get; set; }
 
-    public IspitController(IspitContext context)
+    public IspitController(DjoleGrandContext context)
     {
         Context = context;
     }
 
-    
-    
+
+
 }

@@ -1,6 +1,6 @@
 namespace WebTemplate.Models;
 
-public class IspitContext : DbContext
+public class DjoleGrandContext : DbContext
 {
     public DbSet<Admin>? Admini { get; set; }
 
@@ -22,7 +22,7 @@ public class IspitContext : DbContext
 
 
 
-    public IspitContext(DbContextOptions options) : base(options)
+    public DjoleGrandContext(DbContextOptions options) : base(options)
     {
 
     }
