@@ -11,5 +11,5 @@ public class Projekcija
 
   public DateTime DatumProjekcije { get; set; }
 
-  public List<Karta>? KarteProjekcija { get; set; }
+  public List<Karta>? ProjekcijaKarta { get; set; }
 }

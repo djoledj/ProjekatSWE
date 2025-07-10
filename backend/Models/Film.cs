@@ -13,9 +13,7 @@ public class Film
 
   public string? Zanr { get; set; }
 
-  public List<Sala>? SaleFilm { get; set; }
+  public List<Projekcija>? FilmProjekcija { get; set; }
 
-  public List<Projekcija>? ProjekcijeFilm { get; set; }
-
-  public List<Ocena>? OcenaFilm { get; set;  }
+  public List<Ocena>? FilmOcena { get; set; }
 }
