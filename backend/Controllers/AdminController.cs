@@ -80,5 +80,22 @@ public class AdminController : ControllerBase
         }
     }
 
-    
+    [HttpGet("/komentari")]
+    public async Task<IActionResult> GetComments()
+    {
+        try
+        {
+            var komentari = await Context.Ocene!.OrderByDescending(x => x.VremeKomentara).Select(x => new
+            {
+                x.ID,
+                x.Komentar
+            }).ToListAsync();
+
+            return Ok(komentari);
+        }
+        catch (Exception ec)
+        {
+            return BadRequest(ec.Message);
+        }
+    }
 }
