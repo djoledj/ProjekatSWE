@@ -99,7 +99,7 @@ public class MusterijaController : ControllerBase
         return BadRequest("Ne postoji korisnik sa tim ID");
       }
 
-      var film = await Context.Filmovi!.FirstOrDefaultAsync(p => p.ID == filmID);\
+      var film = await Context.Filmovi!.FirstOrDefaultAsync(p => p.ID == filmID);
 
       if (film == null)
       {
@@ -124,7 +124,51 @@ public class MusterijaController : ControllerBase
     }
   }
 
+  [HttpGet("/zanrSort/{zanr}")]
+  public async Task<IActionResult> SortZanr(string zanr)
+  {
+    try
+    {
+      var films = await Context.Filmovi!.Select(p => new
+      {
+        p.ID,
+        p.Naziv,
+        p.Description,
+        p.Reziser,
+        p.Zanr
+      }).Where(p => p.Zanr == zanr).ToListAsync();
 
+      return Ok(films);
+
+    }
+    catch (Exception ec)
+    {
+      return BadRequest(ec.Message);
+    }
+  }
+
+  [HttpGet("/datum/{datum}")]
+  public async Task<ActionResult> SortDatum(DateTime datum)
+  {
+    try
+    {
+      var film = await Context.Filmovi!.Where(p => p.FilmProjekcija!.Any(p => p.DatumProjekcije.Date == datum.Date)).Select(p => new
+      {
+        p.ID,
+        p.Naziv,
+        p.Description,
+        p.Reziser,
+        p.Zanr
+      }).ToListAsync();
+
+
+      return Ok(film);
+    }
+    catch (Exception ec)
+    {
+      return BadRequest(ec.Message);
+    }
+  }
 
 
 }
