@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace WebTemplate.Controllers;
 
 [ApiController]
@@ -10,6 +12,8 @@ public class AdminController : ControllerBase
     {
         Context = context;
     }
+
+
 
     [HttpPost("/sala/{adminID}")]
     public async Task<IActionResult> AddSala([FromBody] Sala sala, int adminID)
@@ -92,6 +96,25 @@ public class AdminController : ControllerBase
             }).ToListAsync();
 
             return Ok(komentari);
+        }
+        catch (Exception ec)
+        {
+            return BadRequest(ec.Message);
+        }
+    }
+
+    [HttpGet("/zaposleni/{adminID}")]
+    public async Task<IActionResult> GetZaposleni(int adminID)
+    {
+        try
+        {
+            var admin = await Context!.Admini!.FirstOrDefaultAsync(p => p.ID == adminID);
+            if (admin == null)
+            {
+                return Unauthorized("Ne postoji admin sa tim ID");
+            }
+
+            return Ok(Context.Zaposleni);
         }
         catch (Exception ec)
         {

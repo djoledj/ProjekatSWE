@@ -48,6 +48,82 @@ public class MusterijaController : ControllerBase
     }
   }
 
+  [HttpPost("/karta/{projekcijaID}/{userID}")]
+  public async Task<IActionResult> AddKarta(int projekcijaID, int userID)
+  {
+    try
+    {
+      var user = await Context.Musterije!.FirstOrDefaultAsync(p => p.ID == userID);
+
+      if (user == null)
+      {
+        return BadRequest("Ne postoji korisnik sa tim ID");
+      }
+
+      var projekcija = await Context.Projekcije!.FirstOrDefaultAsync(p => p.ID == projekcijaID);
+
+      if (projekcija == null)
+      {
+        return BadRequest("Ne postoji projekcija sa tim ID");
+      }
+
+      var k = new Karta
+      {
+        Projekcija = projekcija,
+        Musterija = user
+      };
+
+      await Context.Karte!.AddAsync(k);
+      await Context.SaveChangesAsync();
+      return Ok("Uspesno obavljena rezervacija");
+
+
+    }
+    catch (Exception ec)
+    {
+      return BadRequest(ec.Message);
+    }
+
+
+  }
+
+  [HttpPost("/komentar/{musterijaID}/{filmID}")]
+  public async Task<IActionResult> AddKomentar([FromBody] Ocena ocena, int musterijaID, int filmID)
+  {
+    try
+    {
+      var user = await Context.Musterije!.FirstOrDefaultAsync(p => p.ID == musterijaID);
+
+      if (user == null)
+      {
+        return BadRequest("Ne postoji korisnik sa tim ID");
+      }
+
+      var film = await Context.Filmovi!.FirstOrDefaultAsync(p => p.ID == filmID);\
+
+      if (film == null)
+      {
+        return BadRequest("Ne postoji film sa tim ID");
+      }
+
+      var komentar = new Ocena
+      {
+        Vrednost = ocena.Vrednost,
+        Komentar = ocena.Komentar,
+        Film = film,
+        Musterija = user
+      };
+
+      await Context.Ocene!.AddAsync(komentar);
+      await Context.SaveChangesAsync();
+      return Ok("Uspesno dodata ocena");
+    }
+    catch (Exception ec)
+    {
+      return BadRequest(ec.Message);
+    }
+  }
+
 
 
 
