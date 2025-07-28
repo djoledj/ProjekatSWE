@@ -22,7 +22,8 @@ public class FilmController : ControllerBase
         p.Naziv,
         p.Description,
         p.Reziser,
-        p.Zanr
+        p.Zanr,
+        p.Slika
       }).ToList();
 
       return Ok(films);

@@ -17,28 +17,28 @@ public class UserController : ControllerBase
   {
     try
     {
-      var zaposleni = await new Functions<Zaposleni>().FindUser(username, password, Context!.Zaposleni!);
+      var zaposleni = await new Functions<Zaposleni>().FindUser(username, password, Context.Zaposleni!);
 
       if (zaposleni != null)
       {
         return Ok(zaposleni);
       }
 
-      var musterija = await new Functions<Musterija>().FindUser(username, password, Context!.Musterije!);
+      var musterija = await new Functions<Musterija>().FindUser(username, password, Context.Musterije!);
 
       if (musterija != null)
       {
         return Ok(musterija);
       }
 
-      var admin = await new Functions<Admin>().FindUser(username, password, Context!.Admini!);
+      var admin = await new Functions<Admin>().FindUser(username, password, Context.Admini!);
 
       if (admin != null)
       {
         return Ok(admin);
       }
 
-      return BadRequest("User with given credentials doesn't exist");
+      return Unauthorized("Wrong email or password");
 
     }
 
@@ -49,7 +49,7 @@ public class UserController : ControllerBase
 
   }
 
-  
+
 
 
 }

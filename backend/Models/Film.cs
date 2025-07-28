@@ -13,6 +13,8 @@ public class Film
 
   public string? Zanr { get; set; }
 
+  public string? Slika { get; set; }
+
   public List<Projekcija>? FilmProjekcija { get; set; }
 
   public List<Ocena>? FilmOcena { get; set; }

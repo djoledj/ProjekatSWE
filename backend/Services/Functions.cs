@@ -6,8 +6,7 @@ public class Functions<T> : ControllerBase where T : User
 {
   public async Task<T?> FindUser(string userName, string password, DbSet<T> users)
   {
-    var user = await users.Where(u => u.UserName == userName)
-                          .FirstOrDefaultAsync();
+    var user = await users.FirstOrDefaultAsync(u => u.UserName == userName);
 
     if (user != null)
     {

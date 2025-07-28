@@ -47,6 +47,8 @@ public class AdminController : ControllerBase
                 return Unauthorized("Ne postoji admin sa tim ID");
             }
 
+            zaposleni.Password = new PasswordHasher<Zaposleni>().HashPassword(zaposleni, zaposleni.Password!);
+
             await Context!.Zaposleni!.AddAsync(zaposleni);
             await Context.SaveChangesAsync();
             return Ok("Uspesno dodat zaposleni sa ID:" + zaposleni.ID);
