@@ -12,26 +12,26 @@ public class UserController : ControllerBase
     Context = context;
   }
 
-  [HttpGet("login/{username}/{password}")]
-  public async Task<IActionResult> Login(string username, string password)
+  [HttpPost("/login")]
+  public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
   {
     try
     {
-      var zaposleni = await new Functions<Zaposleni>().FindUser(username, password, Context.Zaposleni!);
+      var zaposleni = await new Functions<Zaposleni>().FindUser(loginDTO.UserName!, loginDTO.Password!, Context.Zaposleni!);
 
       if (zaposleni != null)
       {
         return Ok(zaposleni);
       }
 
-      var musterija = await new Functions<Musterija>().FindUser(username, password, Context.Musterije!);
+      var musterija = await new Functions<Musterija>().FindUser(loginDTO.UserName!, loginDTO.Password!, Context.Musterije!);
 
       if (musterija != null)
       {
         return Ok(musterija);
       }
 
-      var admin = await new Functions<Admin>().FindUser(username, password, Context.Admini!);
+      var admin = await new Functions<Admin>().FindUser(loginDTO.UserName!, loginDTO.Password!, Context.Admini!);
 
       if (admin != null)
       {

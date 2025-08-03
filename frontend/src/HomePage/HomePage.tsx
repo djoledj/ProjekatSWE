@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import './HomePage.css'
+import { useAuth } from "../context/AuthContext";
 
 
 export interface Film {
@@ -9,13 +10,15 @@ export interface Film {
   naziv: string;
   description: string;
   zanr: string;
-  slikaUrl: string;
+  slika: string;
   reziser: string;
 }
 
 export default function HomePage() {
 
-  //const navigate = useNavigate();
+  const { user, setUser } = useAuth();
+
+  const navigate = useNavigate();
 
   const { isLoading, data, isError } = useQuery({
     queryKey: ['filmovi'],
@@ -28,13 +31,20 @@ export default function HomePage() {
       })
     }
   });
-  console.log(data);
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+    navigate("/");
+  }
+
 
   return (
     <div>
       <div className="gornji-deo">
         <h1>DjoleGrand</h1>
-        {/*<button onClick={() => navigate("/login")} style={{ fontSize: "1rem", padding: "0.5rem 1rem" }}>Login</button>*/}
+        {!user && <button className="loginout-button" onClick={() => navigate("/login")}>Login</button>}
+        {user && <button className="loginout-button" onClick={handleLogout}>LogOut</button>}
       </div>
 
       {isLoading && <p>Ucitavanje filmova</p>}
@@ -43,15 +53,15 @@ export default function HomePage() {
 
 
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "1.5rem" }}>
+      <div className="film-list">
         {data?.map((film: Film) => (
-          <div key={film.id} style={{ border: "1px solid #ccc", padding: "1rem", borderRadius: "8px" }}>
-            <img src={film.slikaUrl} alt={film.naziv} style={{ width: "100%", height: "auto" }} />
-            <h3>{film.naziv}</h3>
-            <p>{film.description}</p>
+          <div key={film.id} className="film-card">
+            <img src={film.slika} alt={film.naziv} className="film-image" />
+            <h3 className="film-title">{film.naziv}</h3>
+            <p className="film-opis">{film.description}</p>
             <p>Reziser: {film.reziser}</p>
             <p>Zanr: {film.zanr}</p>
-            <button color="red">Rezervisi</button>
+            <button className="rezervisi-button">Rezervisi</button>
           </div>
         ))}
       </div>

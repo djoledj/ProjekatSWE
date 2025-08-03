@@ -35,5 +35,30 @@ public class FilmController : ControllerBase
 
   }
 
+  [HttpDelete("/film/{filmID}")]
+  public async Task<IActionResult> Update(int filmID)
+  {
+    try
+    {
+      var film = await Context.Filmovi!.FirstOrDefaultAsync(p => p.ID == filmID);
+
+      if (film == null)
+      {
+        return BadRequest("Ne postoji taj film");
+      }
+
+
+
+      Context.Filmovi!.Remove(film);
+      await Context.SaveChangesAsync();
+
+      return Ok("Uspesno obrisan film");
+    }
+    catch (Exception ec)
+    {
+      return BadRequest(ec.Message);
+    }
+  }
+
 
 }
