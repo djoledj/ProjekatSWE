@@ -6,6 +6,7 @@ import HomePage from './HomePage/HomePage';
 import LoginPage from './LoginPage/LoginPage';
 import { AuthProvider } from './context/AuthContext';
 import Zaposleni from './Zaposleni/Zaposleni';
+import Register from './Register/Register';
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/zaposleni" element={<Zaposleni />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </Router>
       </AuthProvider>
