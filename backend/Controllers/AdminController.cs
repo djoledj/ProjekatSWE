@@ -123,4 +123,50 @@ public class AdminController : ControllerBase
             return BadRequest(ec.Message);
         }
     }
+
+    [HttpDelete("zaposleniDelete/{adminID}/{zaposleniID}")]
+    public async Task<IActionResult> DeleteZaposleni(int adminID, int zaposleniID)
+    {
+        try
+        {
+            var admin = await Context!.Admini!.FirstOrDefaultAsync(p => p.ID == adminID);
+            if (admin == null)
+            {
+                return Unauthorized("Ne postoji admin sa tim ID");
+            }
+            var zap = await Context!.Zaposleni!.FirstOrDefaultAsync(p => p.ID == zaposleniID);
+
+            if (zap == null)
+            {
+                return BadRequest("Ne postoji zaposleni sa tim ID");
+            }
+
+            Context!.Zaposleni!.Remove(zap);
+            await Context.SaveChangesAsync();
+            return Ok("Uspesno izbrisan zaposleni");
+        }
+        catch (Exception ec)
+        {
+            return BadRequest(ec.Message);
+        }
+    }
+
+    [HttpPost("/admin")]
+    public async Task<IActionResult> AddAdmin([FromBody] Admin admin)
+    {
+        try
+        {
+
+
+            admin.Password = new PasswordHasher<Admin>().HashPassword(admin, admin.Password!);
+
+            await Context!.Admini!.AddAsync(admin);
+            await Context.SaveChangesAsync();
+            return Ok("Uspesno dodat zaposleni sa ID:" + admin.ID);
+        }
+        catch (Exception ec)
+        {
+            return BadRequest(ec.Message);
+        }
+    }
 }

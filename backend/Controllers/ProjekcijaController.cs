@@ -67,6 +67,9 @@ public class ProjekcijaController : ControllerBase
 
       }).Where(p => p.ID == filmID).ToListAsync();
 
+      if (film == null)
+            return NotFound($"Film sa ID {filmID} ne postoji.");
+
 
       return Ok(film);
     }
