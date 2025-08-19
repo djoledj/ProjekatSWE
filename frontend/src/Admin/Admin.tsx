@@ -1,14 +1,23 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
-import { Tabs, Flex, Title, Stack, Button, Text, Box, Card, TabsList } from "@mantine/core";
+import { Tabs, Flex, Title, Stack, Button, Text, Card } from "@mantine/core";
 import { useState } from "react";
+import { TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 
 interface Zaposleni {
   id: number,
+  userName: string,
+  password: string,
+  pol: string,
   ime: string,
-  prezime: string
+  prezime: string,
+  telefon: string,
+  drzava: string,
+  grad: string,
+  postanskiBroj: string
 }
 
 interface Comment {
@@ -20,6 +29,17 @@ export default function Admin() {
   const { user, setUser } = useAuth();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string | null>("komentari");
+  const [startAddZaposleni, setStartAddZaposleni] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [gender, setGender] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [phone, setPhone] = useState("");
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [postNumber, setPostNumber] = useState("");
+  const navigate = useNavigate();
 
   const { isLoading: areZaposleniLoading, data: users, isError: usersError } = useQuery<Zaposleni[]>({
     queryKey: ["zaposleni_list", user?.id],
@@ -73,9 +93,54 @@ export default function Admin() {
       alert(err.response.data);
     }
   }
-  console.log()
+
+  const addZaposleni = async (adminId: number) => {
+    try {
+      await axios.post(`https://localhost:7080/zaposleni/${adminId}`, {
+        userName: userName,
+        password: password,
+        pol: gender,
+        ime: name,
+        prezime: surname,
+        telefon: phone,
+        drzava: country,
+        grad: city,
+        postanskiBroj: postNumber
+      });
+
+      setUserName("");
+      setPassword("");
+      setGender("");
+      setName("");
+      setSurname("");
+      setPhone("");
+      setCountry("");
+      setCity("");
+      setPostNumber("");
+      setStartAddZaposleni(false);
+      queryClient.invalidateQueries({ queryKey: ["zaposleni_list", user?.id] });
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response.data);
+    }
+  }
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
+
+
+
   return (
     <Card shadow="sm" p="lg" radius="md" withBorder>
+      <Flex justify="flex-end" mb="md">
+        <Button color="red" onClick={handleLogout}>
+          Logout
+        </Button>
+      </Flex>
       <Tabs value={activeTab} onChange={setActiveTab}>
         <Tabs.List>
           <Tabs.Tab value="komentari">Komentari</Tabs.Tab>
@@ -84,7 +149,7 @@ export default function Admin() {
 
         <Tabs.Panel value="komentari" pt="xs">
           <Title order={3} mb="md">Komentari</Title>
-          {areCommentsLoading && <Text>Ucitavanje komentara</Text>}
+          {areCommentsLoading && <Text>Ucitavanje komentara...</Text>}
           {commentsError && <Text>Greska pri ucitavanju komentara</Text>}
           <Stack>
             {comments?.map((kom) => (
@@ -107,6 +172,122 @@ export default function Admin() {
 
         <Tabs.Panel value="zaposleni" pt="xs">
           <Title order={3} mb="md">Zaposleni</Title>
+
+          {!startAddZaposleni && (<Button onClick={() => setStartAddZaposleni(true)} mb="md">
+            Dodaj radnika
+          </Button>
+
+          )}
+
+          {startAddZaposleni &&
+            <Flex gap="sm" mb="md">
+              <TextField
+                margin="normal"
+                fullWidth
+                required
+                label="Korisničko ime"
+                value={userName}
+                onChange={(e) => {
+                  setUserName(e.target.value);
+                }}
+                autoFocus
+              />
+
+              <TextField
+                margin="normal"
+                fullWidth
+                required
+                label="Lozinka"
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
+
+              <TextField
+                margin="normal"
+                fullWidth
+                required
+                label="Pol"
+                value={gender}
+                onChange={(e) => {
+                  setGender(e.target.value);
+                }}
+              />
+
+              <TextField
+                margin="normal"
+                fullWidth
+                required
+                label="Ime"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+              />
+
+              <TextField
+                margin="normal"
+                fullWidth
+                required
+                label="Prezime"
+                value={surname}
+                onChange={(e) => {
+                  setSurname(e.target.value);
+                }}
+                autoFocus
+              />
+
+              <TextField
+                margin="normal"
+                fullWidth
+                required
+                label="Telefon"
+                value={phone}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                }}
+                autoFocus
+              />
+
+              <TextField
+                margin="normal"
+                fullWidth
+                required
+                label="Drzava"
+                value={country}
+                onChange={(e) => {
+                  setCountry(e.target.value);
+                }}
+              />
+
+              <TextField
+                margin="normal"
+                fullWidth
+                required
+                label="Grad"
+                value={city}
+                onChange={(e) => {
+                  setCity(e.target.value);
+                }}
+              />
+
+              <TextField
+                margin="normal"
+                fullWidth
+                required
+                label="Postanski broj"
+                value={postNumber}
+                onChange={(e) => {
+                  setPostNumber(e.target.value);
+                }}
+              />
+
+              <Button onClick={() => addZaposleni(user?.id)}>Dodaj</Button>
+              <Button onClick={() => setStartAddZaposleni(false)}>Otkazi</Button>
+            </Flex>}
+
           {areZaposleniLoading && <Text>Ucitavanje radnika...</Text>}
           {usersError && <Text>Greska pri ucitavanju radnika</Text>}
           {users?.map((zap) => (
