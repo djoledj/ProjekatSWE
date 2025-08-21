@@ -33,7 +33,24 @@ public class ZaposleniController : ControllerBase
     }
   }
 
-  
+  [HttpGet("/sale")]
+  public ActionResult GetSale()
+  {
+    try
+    {
+      var sale = Context.Sale!.Select(p => new
+      {
+        p.ID,
+        p.Naziv
+      }).ToList();
+
+      return Ok(sale);
+    }
+    catch (Exception ec)
+    {
+      return BadRequest(ec.Message);
+    }
+  }
 
 
 

@@ -173,10 +173,26 @@ export default function Admin() {
         <Tabs.Panel value="zaposleni" pt="xs">
           <Title order={3} mb="md">Zaposleni</Title>
 
-          {!startAddZaposleni && (<Button onClick={() => setStartAddZaposleni(true)} mb="md">
-            Dodaj radnika
-          </Button>
-
+          {!startAddZaposleni && (
+            <>
+              <Button onClick={() => setStartAddZaposleni(true)} mb="md">
+                Dodaj radnika
+              </Button>
+              {areZaposleniLoading && <Text>Ucitavanje radnika...</Text>}
+              {usersError && <Text>Greska pri ucitavanju radnika</Text>}
+              {users?.map((zap) => (
+                <Flex
+                  key={zap.id}
+                  align="center"
+                  justify="space-between"
+                  p="sm"
+                  style={{ border: "1px solid #ddd", borderRadius: "8px" }}
+                >
+                  <Text>{zap.ime} {zap.prezime}</Text>
+                  <Button color="red" size="xs" onClick={() => deleteZaposleni(zap.id, user?.id)}>Obrisi</Button>
+                </Flex>
+              ))}
+            </>
           )}
 
           {startAddZaposleni &&
@@ -288,20 +304,7 @@ export default function Admin() {
               <Button onClick={() => setStartAddZaposleni(false)}>Otkazi</Button>
             </Flex>}
 
-          {areZaposleniLoading && <Text>Ucitavanje radnika...</Text>}
-          {usersError && <Text>Greska pri ucitavanju radnika</Text>}
-          {users?.map((zap) => (
-            <Flex
-              key={zap.id}
-              align="center"
-              justify="space-between"
-              p="sm"
-              style={{ border: "1px solid #ddd", borderRadius: "8px" }}
-            >
-              <Text>{zap.ime} {zap.prezime}</Text>
-              <Button color="red" size="xs" onClick={() => deleteZaposleni(zap.id, user?.id)}>Obrisi</Button>
-            </Flex>
-          ))}
+
         </Tabs.Panel>
       </Tabs>
     </Card>
